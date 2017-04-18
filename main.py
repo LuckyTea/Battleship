@@ -1,15 +1,15 @@
 import sys
 import random
-# 3660 9781
 
 def warning(msg):
     print('\x1b[0;31;40m'+msg+'\x1b[0m')
 
 def init():
-    global sea, ship, ship_dead, stp, loas, loes, e, a, os, sl, s
+    global sea, ship, ship_dead, miss, stp, loas, loes, e, a, os, sl, s
     sea = '\x1b[5;34;44m'+'〜'+'\x1b[0m'
     ship = '\x1b[5;30;47m'+'□'+'\x1b[0m'
     ship_dead = '\x1b[5;30;47m'+'■'+'\x1b[0m'
+    miss = '\x1b[5;31;44m'+'◌'+'\x1b[0m'
     stp = 0
     loas = []
     loes = []
@@ -143,7 +143,7 @@ def check1(x, y):
             return(False)
 
 def check2(x, y, ii, z):
-    k = []
+    temp = []
     if a[y][x] == sea:
         if z == 'h':
             for i in range(ii):
@@ -152,8 +152,8 @@ def check2(x, y, ii, z):
             if check1(x,y) and check1(x+(ii-1),y):
                 for i in range(ii):
                     a[y][x+i] = ship
-                    k.append([x+i,y,1])
-                loas.append(k)
+                    temp.append([x+i,y,1])
+                loas.append(temp)
                 return(True)
             else:
                 return(False)
@@ -165,8 +165,8 @@ def check2(x, y, ii, z):
                 if check1(x,y) and check1(x,y+(ii-1)):
                     for i in range(ii):
                         a[y+i][x] = ship
-                        k.append([x,y+i,1])
-                    loas.append(k)
+                        temp.append([x,y+i,1])
+                    loas.append(temp)
                     return(True)
                 else:
                     print(type(x), x, type(y),y)
@@ -205,6 +205,9 @@ def shoot():
                 warning('Корабль потоплен!')
                 win_condition()
             else:
+                if e[y][x] != ship_dead:
+                    e[y][x] = miss
+                draw()
                 warning('Мимо!')
                 enemy_turn()
         except KeyboardInterrupt:
@@ -224,6 +227,13 @@ def shoot_check(x,y):
             for ii in range(len(loes[i])):
                 tmp += loes[i][ii][2]
             if tmp == 0:
+                for ii in range(len(loes[i])):
+                    x1,y1,z1 = list(loes[i][ii])
+                    for iii in range(8):
+                        e[(0 if ((y1-1) < 0) else y1-1)][(0 if ((x1-1) < 0) else x1-1)] = e[(0 if ((y1-1) < 0) else y1-1)][x1] = e[(0 if ((y1-1) < 0) else y1-1)][(9 if ((x1+1) > 9) else x1+1)] = e[y1][(0 if ((x1-1) < 0) else x1-1)] = e[y1][(9 if ((x1+1) > 9) else x1+1)] = e[(9 if ((y1+1) > 9) else y1+1)][(0 if ((x1-1) < 0) else x1-1)] = e[(9 if ((y1+1) > 9) else y1+1)][x1] = e[(9 if ((y1+1) > 9) else y1+1)][(9 if ((x1+1) > 9) else x1+1)] = miss
+                for ii in range(len(loes[i])):
+                    x1,y1,z1 = list(loes[i][ii])
+                    e[y1][x1] = ship_dead
                 return([1,1])
             else:
                 return([1,0])

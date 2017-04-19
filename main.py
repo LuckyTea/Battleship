@@ -33,14 +33,15 @@ def enemy():
     temp = []
     for i in range(len(loes)):
         for ii in range(len(loes[i])):
-            temp.append(loes[i][ii])
+            temp.append(tuple(loes[i][ii]))
             e[loes[i][ii][1]][loes[i][ii][0]] = ship
     for i in range(4):
+        temp2 = tuple(temp)
         while True:
             x = random.randrange(10)
             y = random.randrange(10)
-            if [x,y,1] not in temp and [x-1,y-1,1] not in temp and [x,y-1,1] not in temp and [x+1,y-1,1] not in temp and [x-1,y,1] not in temp and [x+1,y,1] not in temp and [x-1,y+1,1] not in temp and [x,y+1,1] not in temp and [x+1,y+1,1] not in temp:
-                temp.append([x,y,1])
+            if (x,y,1) not in temp2 and (x-1,y-1,1) not in temp2 and (x,y-1,1) not in temp2 and (x+1,y-1,1) not in temp2 and (x-1,y,1) not in temp2 and (x+1,y,1) not in temp2 and (x-1,y+1,1) not in temp2 and (x,y+1,1) not in temp2 and (x+1,y+1,1) not in temp2:
+                temp.append(tuple([x,y,1]))
                 loes.append([[x,y,1]])
                 e[y][x] = ship
                 break

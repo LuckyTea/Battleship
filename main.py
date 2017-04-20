@@ -30,18 +30,17 @@ def enemy():
                 [[[6,0,1],[7,0,1]],[[1,9,1],[2,9,1]],[[9,4,1],[9,5,1]],[[9,0,1],[9,1,1],[9,2,1]],[[9,7,1],[9,8,1],[9,9,1]],[[4,9,1],[5,9,1],[6,9,1],[7,9,1]]]]
     strategy = random.randrange(len(templates))
     loes[:0] = templates[strategy]
-    temp = []
+    temp = ()
     for i in range(len(loes)):
         for ii in range(len(loes[i])):
-            temp.append(tuple(loes[i][ii]))
+            temp += (tuple(loes[i][ii]),)
             e[loes[i][ii][1]][loes[i][ii][0]] = ship
     for i in range(4):
-        temp2 = tuple(temp)
         while True:
             x = random.randrange(10)
             y = random.randrange(10)
-            if (x,y,1) not in temp2 and (x-1,y-1,1) not in temp2 and (x,y-1,1) not in temp2 and (x+1,y-1,1) not in temp2 and (x-1,y,1) not in temp2 and (x+1,y,1) not in temp2 and (x-1,y+1,1) not in temp2 and (x,y+1,1) not in temp2 and (x+1,y+1,1) not in temp2:
-                temp.append((x,y,1))
+            if (x,y,1) not in temp and (x-1,y-1,1) not in temp and (x,y-1,1) not in temp and (x+1,y-1,1) not in temp and (x-1,y,1) not in temp and (x+1,y,1) not in temp and (x-1,y+1,1) not in temp and (x,y+1,1) not in temp and (x+1,y+1,1) not in temp:
+                temp += ((x,y,1),)
                 loes.append([[x,y,1]])
                 e[y][x] = ship
                 break

@@ -5,7 +5,12 @@ def warning(msg):
     print('\x1b[0;31;40m'+msg+'\x1b[0m')
 
 def init():
-    global sea, ship, ship_dead, miss, stp, loas, loes, e, a, os, sl, s
+    global debug_mode, sea, ship, ship_dead, miss, stp, loas, loes, e, a, os, sl, s
+    if len(sys.argv) > 1:
+        if sys.argv[1] == '--D' or sys.argv[1] == '-dubug':
+            debug_mode = 1
+    else:
+        debug_mode = 0
     sea = '\x1b[5;34;44m'+'〜'+'\x1b[0m'
     ship = '\x1b[5;30;47m'+'□'+'\x1b[0m'
     ship_dead = '\x1b[5;30;47m'+'■'+'\x1b[0m'
@@ -18,9 +23,9 @@ def init():
     os = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4, 'f':5, 'g':6, 'h':7, 'i':8, 'j':9}
     sl = ('катер 1', 'катер 2', 'катер 3', 'катер 4', 'эсминец 1', 'эсминец 2', 'эсминец 3', 'крейсер 1', 'крейсер 2', 'линкор')
     s = {'катер 1':1, 'катер 2':1, 'катер 3':1, 'катер 4':1, 'эсминец 1':2, 'эсминец 2':2, 'эсминец 3':2, 'крейсер 1':3, 'крейсер 2':3, 'линкор':4}
+    main()
 
 def enemy():
-    global loes
     templates = [[[[0,4,1],[0,5,1]],[[9,0,1],[9,1,1]],[[9,3,1],[9,4,1]],[[0,0,1],[0,1,1],[0,2,1]],[[0,7,1],[0,8,1],[0,9,1]],[[9,6,1],[9,7,1],[9,8,1],[9,9,1]]],
                 [[[0,5,1],[0,6,1]],[[0,8,1],[0,9,1]],[[2,4,1],[2,5,1]],[[2,0,1],[2,1,1],[2,2,1]],[[2,7,1],[2,8,1],[2,9,1]],[[0,0,1],[0,1,1],[0,2,1],[0,3,1]]],
                 [[[9,5,1],[9,6,1]],[[9,8,1],[9,9,1]],[[7,4,1],[7,5,1]],[[7,0,1],[7,1,1],[7,2,1]],[[7,7,1],[7,8,1],[7,9,1]],[[9,0,1],[9,1,1],[9,2,1],[9,3,1]]],
@@ -34,7 +39,8 @@ def enemy():
     for i in range(len(loes)):
         for ii in range(len(loes[i])):
             temp += (tuple(loes[i][ii]),)
-            e[loes[i][ii][1]][loes[i][ii][0]] = ship
+            if debug_mode == 1:
+                e[loes[i][ii][1]][loes[i][ii][0]] = ship
     for i in range(4):
         while True:
             x = random.randrange(10)
@@ -42,7 +48,8 @@ def enemy():
             if (x,y,1) not in temp and (x-1,y-1,1) not in temp and (x,y-1,1) not in temp and (x+1,y-1,1) not in temp and (x-1,y,1) not in temp and (x+1,y,1) not in temp and (x-1,y+1,1) not in temp and (x,y+1,1) not in temp and (x+1,y+1,1) not in temp:
                 temp += ((x,y,1),)
                 loes.append([[x,y,1]])
-                e[y][x] = ship
+                if debug_mode == 1:
+                    e[y][x] = ship
                 break
 
 def draw():
@@ -254,11 +261,15 @@ def win_condition():
         print('{} палуб врага осталось'.format(tmp))
 
 def main():
-    init()
-    enemy()
-    draw()
-    #place()
-    shoot()
+    if debug_mode == 1:
+        enemy()
+        draw()
+        shoot()
+    else:
+        enemy()
+        draw()
+        place()
+        shoot()
 
 if __name__ == '__main__':
-    main()
+    init()

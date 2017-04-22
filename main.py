@@ -1,30 +1,30 @@
 import sys
 import random
 
+class Initiation():
+    def init(self):
+        if len(sys.argv) > 1:
+            if sys.argv[1] == '--D' or sys.argv[1] == '-dubug':
+                self.debug_mode = 1
+        else:
+            self.debug_mode = 0
+        self.tile_sea = '\x1b[5;34;44m'+'〜'+'\x1b[0m'
+        self.tile_ship = '\x1b[5;30;47m'+'□'+'\x1b[0m'
+        self.tile_ship_dead = '\x1b[5;30;47m'+'■'+'\x1b[0m'
+        self.tile_miss = '\x1b[5;31;44m'+'◌'+'\x1b[0m'
+        self.turns = 0
+        self.loas = []  # List of Ally Ships
+        self.loes = []  # List of Enemy Ships
+        self.e = [[self.tile_sea]*10 for i in range(10)]
+        self.a = [[self.tile_sea]*10 for i in range(10)]
+        self.os = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4, 'f':5, 'g':6, 'h':7, 'i':8, 'j':9}
+        self.ros = {0:'A', 1:'B', 2:'C', 3:'D', 4:'E', 5:'F', 6:'G', 7:'H', 8:'I', 9:'J'}
+        self.sl = ('катер 1', 'катер 2', 'катер 3', 'катер 4', 'эсминец 1', 'эсминец 2', 'эсминец 3', 'крейсер 1', 'крейсер 2', 'линкор')
+        self.s = {'катер 1':1, 'катер 2':1, 'катер 3':1, 'катер 4':1, 'эсминец 1':2, 'эсминец 2':2, 'эсминец 3':2, 'крейсер 1':3, 'крейсер 2':3, 'линкор':4}
+        main()
+
 def warning(msg):
     print('\x1b[0;31;40m'+msg+'\x1b[0m')
-
-def init():
-    global debug_mode, sea, ship, ship_dead, miss, stp, loas, loes, e, a, os, ros, sl, s
-    if len(sys.argv) > 1:
-        if sys.argv[1] == '--D' or sys.argv[1] == '-dubug':
-            debug_mode = 1
-    else:
-        debug_mode = 0
-    sea = '\x1b[5;34;44m'+'〜'+'\x1b[0m'
-    ship = '\x1b[5;30;47m'+'□'+'\x1b[0m'
-    ship_dead = '\x1b[5;30;47m'+'■'+'\x1b[0m'
-    miss = '\x1b[5;31;44m'+'◌'+'\x1b[0m'
-    stp = 0
-    loas = []
-    loes = []
-    e = [[sea]*10 for i in range(10)]
-    a = [[sea]*10 for i in range(10)]
-    os = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4, 'f':5, 'g':6, 'h':7, 'i':8, 'j':9}
-    ros = {0:'A', 1:'B', 2:'C', 3:'D', 4:'E', 5:'F', 6:'G', 7:'H', 8:'I', 9:'J'}
-    sl = ('катер 1', 'катер 2', 'катер 3', 'катер 4', 'эсминец 1', 'эсминец 2', 'эсминец 3', 'крейсер 1', 'крейсер 2', 'линкор')
-    s = {'катер 1':1, 'катер 2':1, 'катер 3':1, 'катер 4':1, 'эсминец 1':2, 'эсминец 2':2, 'эсминец 3':2, 'крейсер 1':3, 'крейсер 2':3, 'линкор':4}
-    main()
 
 def enemy():
     templates = [[[[0,4,1],[0,5,1]],[[9,0,1],[9,1,1]],[[9,3,1],[9,4,1]],[[0,0,1],[0,1,1],[0,2,1]],[[0,7,1],[0,8,1],[0,9,1]],[[9,6,1],[9,7,1],[9,8,1],[9,9,1]]],
@@ -35,48 +35,49 @@ def enemy():
                 [[[9,0,1],[9,1,1]],[[0,6,1],[0,7,1]],[[0,9,1],[1,9,1]],[[0,0,1],[1,0,1],[2,0,1]],[[0,2,1],[0,3,1],[0,4,1]],[[4,0,1],[5,0,1],[6,0,1],[7,0,1]]],
                 [[[6,0,1],[7,0,1]],[[1,9,1],[2,9,1]],[[9,4,1],[9,5,1]],[[9,0,1],[9,1,1],[9,2,1]],[[9,7,1],[9,8,1],[9,9,1]],[[4,9,1],[5,9,1],[6,9,1],[7,9,1]]]]
     strategy = random.randrange(len(templates))
-    loes[:0] = templates[strategy]
+    I.loes[:0] = templates[strategy]
     temp = ()
-    for i in range(len(loes)):
-        for ii in range(len(loes[i])):
-            temp += (tuple(loes[i][ii]),)
-            if debug_mode == 1:
-                e[loes[i][ii][1]][loes[i][ii][0]] = ship
+    for i in range(len(I.loes)):
+        for ii in range(len(I.loes[i])):
+            temp += (tuple(I.loes[i][ii]),)
+            if I.debug_mode == 1:
+                I.e[I.loes[i][ii][1]][I.loes[i][ii][0]] = I.tile_ship
     for i in range(4):
         while True:
             x = random.randrange(10)
             y = random.randrange(10)
             if (x,y,1) not in temp and (x-1,y-1,1) not in temp and (x,y-1,1) not in temp and (x+1,y-1,1) not in temp and (x-1,y,1) not in temp and (x+1,y,1) not in temp and (x-1,y+1,1) not in temp and (x,y+1,1) not in temp and (x+1,y+1,1) not in temp:
                 temp += ((x,y,1),)
-                loes.append([[x,y,1]])
-                if debug_mode == 1:
-                    e[y][x] = ship
+                I.loes.append([[x,y,1]])
+                if I.debug_mode == 1:
+                    I.e[y][x] = I.tile_ship
                 break
 
 def draw():
-    for i in range(len(a)):
+    print(chr(27) + "[2J")
+    for i in range(len(I.a)):
         if i == 0:
             print('  Противник         Флот ')
             print('  ABCDEFGHIJ        ABCDEFGHIJ ')
             print(' ╔══════════╗      ╔══════════╗')
-            print('0║'+''.join(e[i])+'║     '+'0║'+''.join(a[i])+'║')
+            print('0║'+''.join(I.e[i])+'║     '+'0║'+''.join(I.a[i])+'║')
         elif i == 9:
-            print('9║'+''.join(e[i])+'║     '+'9║'+''.join(a[i])+'║')
+            print('9║'+''.join(I.e[i])+'║     '+'9║'+''.join(I.a[i])+'║')
             print(' ╚══════════╝      ╚══════════╝')
         else:
-            print(str(i)+'║'+''.join(e[i])+'║     '+str(i)+'║'+''.join(a[i])+'║')
+            print(str(i)+'║'+''.join(I.e[i])+'║     '+str(i)+'║'+''.join(I.a[i])+'║')
     
 def place():
-    if debug_mode == 0:
-        for i in range(len(sl)):
+    if I.debug_mode == 0:
+        for i in range(len(I.sl)):
             while True:
-                ii = s[sl[i]]
+                ii = I.s[I.sl[i]]
                 try:
                     if i < 4:
-                        pos = input('Где разместить {} (например: А0): '.format(sl[i])).lower()
+                        pos = input('Где разместить {} (например: А0): '.format(I.sl[i])).lower()
                         if len(pos) == 2:
                             x,y = list(pos)
-                            x = os[x]
+                            x = I.os[x]
                             y = int(y)
                         else:
                             raise
@@ -87,16 +88,16 @@ def place():
                             warning('У за пределами')
                             raise
                         if check1(x, y):
-                            a[y][x] = ship
-                            loas.append([x,y,1])
+                            I.a[y][x] = I.tile_ship
+                            I.loas.append([x,y,1])
                             break
                         else:
                             raise
                     else:
-                        pos = input('Где и как разместить {} (например: HА0 или VA0): '.format(sl[i])).lower()
+                        pos = input('Где и как разместить {} (например: HА0 или VA0): '.format(I.sl[i])).lower()
                         if len(pos) == 3:
                             p,x,y = list(pos)
-                            x = os[x]
+                            x = I.os[x]
                             y = int(y)
                         else:
                             raise
@@ -119,7 +120,6 @@ def place():
                 except:
                     print(sys.exc_info())
                     warning('Некорректные координаты.')
-            print(chr(27) + "[2J")
             draw()
     else:
         templates = [[[[0,4,1],[0,5,1]],[[9,0,1],[9,1,1]],[[9,3,1],[9,4,1]],[[0,0,1],[0,1,1],[0,2,1]],[[0,7,1],[0,8,1],[0,9,1]],[[9,6,1],[9,7,1],[9,8,1],[9,9,1]]],
@@ -130,79 +130,78 @@ def place():
                     [[[9,0,1],[9,1,1]],[[0,6,1],[0,7,1]],[[0,9,1],[1,9,1]],[[0,0,1],[1,0,1],[2,0,1]],[[0,2,1],[0,3,1],[0,4,1]],[[4,0,1],[5,0,1],[6,0,1],[7,0,1]]],
                     [[[6,0,1],[7,0,1]],[[1,9,1],[2,9,1]],[[9,4,1],[9,5,1]],[[9,0,1],[9,1,1],[9,2,1]],[[9,7,1],[9,8,1],[9,9,1]],[[4,9,1],[5,9,1],[6,9,1],[7,9,1]]]]
         strategy = random.randrange(len(templates))
-        loas[:0] = templates[strategy]
+        I.loas[:0] = templates[strategy]
         temp = ()
-        for i in range(len(loas)):
-            for ii in range(len(loas[i])):
-                temp += (tuple(loas[i][ii]),)
-                if debug_mode == 1:
-                    a[loas[i][ii][1]][loas[i][ii][0]] = ship
+        for i in range(len(I.loas)):
+            for ii in range(len(I.loas[i])):
+                temp += (tuple(I.loas[i][ii]),)
+                if I.debug_mode == 1:
+                    I.a[I.loas[i][ii][1]][I.loas[i][ii][0]] = I.tile_ship
         for i in range(4):
             while True:
                 x = random.randrange(10)
                 y = random.randrange(10)
                 if (x,y,1) not in temp and (x-1,y-1,1) not in temp and (x,y-1,1) not in temp and (x+1,y-1,1) not in temp and (x-1,y,1) not in temp and (x+1,y,1) not in temp and (x-1,y+1,1) not in temp and (x,y+1,1) not in temp and (x+1,y+1,1) not in temp:
                     temp += ((x,y,1),)
-                    loas.append([[x,y,1]])
-                    a[y][x] = ship
+                    I.loas.append([[x,y,1]])
+                    I.a[y][x] = I.tile_ship
                     break
-        print(chr(27) + "[2J")
         draw()
 
 def check1(x, y):
     if y == 0:
-        if x == 0 and a[y][x] == sea and a[y+1][x] == sea and a[y+1][x+1] == sea and a[y][x+1] == sea:
+        if x == 0 and I.a[y][x] == I.tile_sea and I.a[y+1][x] == I.tile_sea and I.a[y+1][x+1] == I.tile_sea and I.a[y][x+1] == I.tile_sea:
             return(True)
-        elif x == 9 and a[y][x] == sea and a[y+1][x-1] == sea and a[y+1][x] == sea and a[y][x-1] == sea:
+        elif x == 9 and I.a[y][x] == I.tile_sea and I.a[y+1][x-1] == I.tile_sea and I.a[y+1][x] == I.tile_sea and I.a[y][x-1] == I.tile_sea:
             return(True)
-        elif a[y][x] == sea and a[y+1][x-1] == sea and a[y+1][x] == sea and a[y+1][x+1] == sea and a[y][x-1] == sea and a[y][x+1] == sea:
+        elif I.a[y][x] == I.tile_sea and I.a[y+1][x-1] == I.tile_sea and I.a[y+1][x] == I.tile_sea and I.a[y+1][x+1] == I.tile_sea and I.a[y][x-1] == I.tile_sea and I.a[y][x+1] == I.tile_sea:
             return(True)
         else:
             return(False)
     elif y == 9:
-        if x == 0 and a[y][x] == sea and a[y-1][x] == sea and a[y-1][x+1] == sea and a[y][x+1] == sea:
+        if x == 0 and I.a[y][x] == I.tile_sea and I.a[y-1][x] == I.tile_sea and I.a[y-1][x+1] == I.tile_sea and I.a[y][x+1] == I.tile_sea:
             return(True)
-        elif x == 9 and a[y][x] == sea and a[y-1][x-1] == sea and a[y-1][x] == sea and a[y][x-1] == sea:
+        elif x == 9 and I.a[y][x] == I.tile_sea and I.a[y-1][x-1] == I.tile_sea and I.a[y-1][x] == I.tile_sea and I.a[y][x-1] == I.tile_sea:
             return(True)
-        elif a[y][x] == sea and a[y-1][x-1] == sea and a[y-1][x] == sea and a[y-1][x+1] == sea and a[y][x-1] == sea and a[y][x+1] == sea:
+        elif I.a[y][x] == I.tile_sea and I.a[y-1][x-1] == I.tile_sea and I.a[y-1][x] == I.tile_sea and I.a[y-1][x+1] == I.tile_sea and I.a[y][x-1] == I.tile_sea and I.a[y][x+1] == I.tile_sea:
             return(True)
         else:
             return(False)
     else:
-        if x == 0 and a[y][x] == sea and a[y-1][x] == sea and a[y-1][x+1] == sea and a[y][x+1] == sea and  a[y+1][x] == sea and a[y+1][x+1] == sea:
+        if x == 0 and I.a[y][x] == I.tile_sea and I.a[y-1][x] == I.tile_sea and I.a[y-1][x+1] == I.tile_sea and I.a[y][x+1] == I.tile_sea and  I.a[y+1][x] == I.tile_sea and I.a[y+1][x+1] == I.tile_sea:
             return(True)
-        elif x == 9 and a[y][x] == sea and a[y-1][x] == sea and a[y-1][x-1] == sea and a[y][x-1] == sea and  a[y+1][x] == sea and a[y+1][x-1] == sea:
+        elif x == 9 and I.a[y][x] == I.tile_sea and I.a[y-1][x] == I.tile_sea and I.a[y-1][x-1] == I.tile_sea and I.a[y][x-1] == I.tile_sea and  I.a[y+1][x] == I.tile_sea and I.a[y+1][x-1] == I.tile_sea:
             return(True)
-        elif a[y][x] == sea and a[y-1][x-1] == sea and a[y-1][x] == sea and a[y-1][x+1] == sea and a[y][x-1] == sea and a[y][x+1] == sea and a[y+1][x-1] == sea and a[y+1][x] == sea and a[y+1][x+1] == sea:
+        elif I.a[y][x] == I.tile_sea and I.a[y-1][x-1] == I.tile_sea and I.a[y-1][x] == I.tile_sea and I.a[y-1][x+1] == I.tile_sea and I.a[y][x-1] == I.tile_sea and I.a[y][x+1] == I.tile_sea and I.a[y+1][x-1] == I.tile_sea and I.a[y+1][x] == I.tile_sea and I.a[y+1][x+1] == I.tile_sea:
             return(True)
         else:
             return(False)
 
 def check2(x, y, ii, z):
     temp = []
-    if a[y][x] == sea:
+    if I.a[y][x] == I.tile_sea:
         if z == 'h':
             for i in range(ii):
-                if a[y][x+i] != sea:
+                if I.a[y][x+i] != I.tile_sea:
                     return(False)
             if check1(x,y) and check1(x+(ii-1),y):
                 for i in range(ii):
-                    a[y][x+i] = ship
+                    I.a[y][x+i] = I.tile_ship
                     temp.append([x+i,y,1])
-                loas.append(temp)
+                I.loas.append(temp)
                 return(True)
             else:
                 return(False)
         else:
             for i in range(ii):
-                if a[y+i][x] != sea:
+                if I.a[y+i][x] != I.tile_sea:
                     return(False)
                 print(x,y,'--',x,y+(ii-1))
                 if check1(x,y) and check1(x,y+(ii-1)):
                     for i in range(ii):
-                        a[y+i][x] = ship
+                        I.a[y+i][x] = I.tile_ship
                         temp.append([x,y+i,1])
-                    loas.append(temp)
+                    I.loas.append(temp)
                     return(True)
                 else:
                     print(type(x), x, type(y),y)
@@ -213,12 +212,12 @@ def check2(x, y, ii, z):
 def shoot():
     while True:
         global stp
-        stp = stp + 1
+        I.turns = I.turns + 1
         try:
             pos = input('Наводка орудия (например: А0): ').lower()
             if len(pos) == 2:
                 x,y = list(pos)
-                x = os[x]
+                x = I.os[x]
                 y = int(y)
             else:
                 raise
@@ -230,19 +229,17 @@ def shoot():
                 raise
             k = shoot_check(x,y,'a')
             if k == [1,0]:
-                e[y][x] = ship_dead
-                print(chr(27) + "[2J")
+                I.e[y][x] = I.tile_ship_dead
                 draw()
                 warning('Попадание!')
             elif k == [1,1]:
-                e[y][x] = ship_dead
-                print(chr(27) + "[2J")
+                I.e[y][x] = I.tile_ship_dead
                 draw()
                 warning('Корабль потоплен!')
                 win_condition()
             else:
-                if e[y][x] != ship_dead:
-                    e[y][x] = miss
+                if I.e[y][x] != I.tile_ship_dead:
+                    I.e[y][x] = I.tile_miss
                 draw()
                 warning('Мимо!')
                 enemy_turn()
@@ -257,38 +254,38 @@ def shoot():
 
 def shoot_check(x,y,person):
     if person == 'a':
-        for i in range(len(loes)):
-            if [x,y,1] in loes[i]:
-                loes[i][loes[i].index([x,y,1])] = [x,y,0]
+        for i in range(len(I.loes)):
+            if [x,y,1] in I.loes[i]:
+                I.loes[i][I.loes[i].index([x,y,1])] = [x,y,0]
                 tmp = 0
-                for ii in range(len(loes[i])):
-                    tmp += loes[i][ii][2]
+                for ii in range(len(I.loes[i])):
+                    tmp += I.loes[i][ii][2]
                 if tmp == 0:
-                    for ii in range(len(loes[i])):
-                        x1,y1,z1 = list(loes[i][ii])
+                    for ii in range(len(I.loes[i])):
+                        x1,y1,z1 = list(I.loes[i][ii])
                         for iii in range(8):
-                            e[(0 if ((y1-1) < 0) else y1-1)][(0 if ((x1-1) < 0) else x1-1)] = e[(0 if ((y1-1) < 0) else y1-1)][x1] = e[(0 if ((y1-1) < 0) else y1-1)][(9 if ((x1+1) > 9) else x1+1)] = e[y1][(0 if ((x1-1) < 0) else x1-1)] = e[y1][(9 if ((x1+1) > 9) else x1+1)] = e[(9 if ((y1+1) > 9) else y1+1)][(0 if ((x1-1) < 0) else x1-1)] = e[(9 if ((y1+1) > 9) else y1+1)][x1] = e[(9 if ((y1+1) > 9) else y1+1)][(9 if ((x1+1) > 9) else x1+1)] = miss
-                    for ii in range(len(loes[i])):
-                        x1,y1,z1 = list(loes[i][ii])
-                        e[y1][x1] = ship_dead
+                            I.e[(0 if ((y1-1) < 0) else y1-1)][(0 if ((x1-1) < 0) else x1-1)] = I.e[(0 if ((y1-1) < 0) else y1-1)][x1] = I.e[(0 if ((y1-1) < 0) else y1-1)][(9 if ((x1+1) > 9) else x1+1)] = I.e[y1][(0 if ((x1-1) < 0) else x1-1)] = I.e[y1][(9 if ((x1+1) > 9) else x1+1)] = I.e[(9 if ((y1+1) > 9) else y1+1)][(0 if ((x1-1) < 0) else x1-1)] = I.e[(9 if ((y1+1) > 9) else y1+1)][x1] = I.e[(9 if ((y1+1) > 9) else y1+1)][(9 if ((x1+1) > 9) else x1+1)] = I.tile_miss
+                    for ii in range(len(I.loes[i])):
+                        x1,y1,z1 = list(I.loes[i][ii])
+                        I.e[y1][x1] = I.tile_ship_dead
                     return([1,1])
                 else:
                     return([1,0])
     else:
-        for i in range(len(loas)):
-            if [x,y,1] in loas[i]:
-                loas[i][loas[i].index([x,y,1])] = [x,y,0]
+        for i in range(len(I.loas)):
+            if [x,y,1] in I.loas[i]:
+                I.loas[i][I.loas[i].index([x,y,1])] = [x,y,0]
                 tmp = 0
-                for ii in range(len(loas[i])):
-                    tmp += loas[i][ii][2]
+                for ii in range(len(I.loas[i])):
+                    tmp += I.loas[i][ii][2]
                 if tmp == 0:
-                    for ii in range(len(loas[i])):
-                        x1,y1,z1 = list(loas[i][ii])
+                    for ii in range(len(I.loas[i])):
+                        x1,y1,z1 = list(I.loas[i][ii])
                         for iii in range(8):
-                            a[(0 if ((y1-1) < 0) else y1-1)][(0 if ((x1-1) < 0) else x1-1)] = a[(0 if ((y1-1) < 0) else y1-1)][x1] = a[(0 if ((y1-1) < 0) else y1-1)][(9 if ((x1+1) > 9) else x1+1)] = a[y1][(0 if ((x1-1) < 0) else x1-1)] = a[y1][(9 if ((x1+1) > 9) else x1+1)] = a[(9 if ((y1+1) > 9) else y1+1)][(0 if ((x1-1) < 0) else x1-1)] = a[(9 if ((y1+1) > 9) else y1+1)][x1] = a[(9 if ((y1+1) > 9) else y1+1)][(9 if ((x1+1) > 9) else x1+1)] = miss
-                    for ii in range(len(loas[i])):
-                        x1,y1,z1 = list(loas[i][ii])
-                        a[y1][x1] = ship_dead
+                            I.a[(0 if ((y1-1) < 0) else y1-1)][(0 if ((x1-1) < 0) else x1-1)] = I.a[(0 if ((y1-1) < 0) else y1-1)][x1] = I.a[(0 if ((y1-1) < 0) else y1-1)][(9 if ((x1+1) > 9) else x1+1)] = I.a[y1][(0 if ((x1-1) < 0) else x1-1)] = I.a[y1][(9 if ((x1+1) > 9) else x1+1)] = I.a[(9 if ((y1+1) > 9) else y1+1)][(0 if ((x1-1) < 0) else x1-1)] = I.a[(9 if ((y1+1) > 9) else y1+1)][x1] = I.a[(9 if ((y1+1) > 9) else y1+1)][(9 if ((x1+1) > 9) else x1+1)] = I.tile_miss
+                    for ii in range(len(I.loas[i])):
+                        x1,y1,z1 = list(I.loas[i][ii])
+                        I.a[y1][x1] = I.tile_ship_dead
                     return([1,1])
                 else:
                     return([1,0])
@@ -297,20 +294,20 @@ def enemy_turn():
     x = random.randrange(10)
     y = random.randrange(10)
     tmp = shoot_check(x,y,'e')
-    print(tmp,x,y, a[y][x])
     if tmp == [1,0] or tmp == [1,1]:
-        a[y][x] = ship_dead
+        I.a[y][x] = I.tile_ship_dead
         draw()
+        input('{}{}, противник попал.'.format(I.ros[x],y))
         enemy_turn()
     else:
-        print('{}{}, Противник промазал.'.format(ros[x],y))
+        print('{}{}, противник промазал.'.format(I.ros[x],y))
         pass
 
 def win_condition():
     tmp = 0
-    for i in range(len(loes)):
-        for ii in range(len(loes[i])):
-            tmp += loes[i][ii][2]
+    for i in range(len(I.loes)):
+        for ii in range(len(I.loes[i])):
+            tmp += I.loes[i][ii][2]
     if tmp == 0:
         warning('Ты победил врага на {} ход!'.format(stp))
         sys.exit()
@@ -324,4 +321,5 @@ def main():
         shoot()
 
 if __name__ == '__main__':
-    init()
+    I = Initiation()
+    I.init()

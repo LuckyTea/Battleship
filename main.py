@@ -9,10 +9,11 @@ class Initiation():
                 self.debug_mode = 1
         else:
             self.debug_mode = 0
-        self.tile_sea = '\x1b[5;34;44m' + '〜' + '\x1b[0m'
+        self.tile_sea = '\x1b[5;34;44m' + ' ' + '\x1b[0m'
         self.tile_ship = '\x1b[5;30;47m' + '□' + '\x1b[0m'
         self.tile_ship_dead = '\x1b[5;30;47m' + '■' + '\x1b[0m'
-        self.tile_miss = '\x1b[5;31;44m' + '◌' + '\x1b[0m'
+        self.tile_miss = '\x1b[5;37;44m' + '◌' + '\x1b[0m'
+        self.tile_border = '\x1b[5;34;44m' + '║' + '\x1b[0m'
         self.turns = 0
         self.deck_alive = 20
         self.lops = []  # List of Players Ships
@@ -30,7 +31,13 @@ def warning(msg):
     print('\x1b[0;31;40m' + msg + '\x1b[0m')
 
 
-def enemy():
+def qucik_place(person):
+    if person == 'enemy':
+        los = I.loes
+        map = I.map_enemy
+    else:
+        los = I.lops
+        map = I.map_player
     templates = [[[[0,4,1],[0,5,1]],[[9,0,1],[9,1,1]],[[9,3,1],[9,4,1]],[[0,0,1],[0,1,1],[0,2,1]],[[0,7,1],[0,8,1],[0,9,1]],[[9,6,1],[9,7,1],[9,8,1],[9,9,1]]],
                  [[[0,5,1],[0,6,1]],[[0,8,1],[0,9,1]],[[2,4,1],[2,5,1]],[[2,0,1],[2,1,1],[2,2,1]],[[2,7,1],[2,8,1],[2,9,1]],[[0,0,1],[0,1,1],[0,2,1],[0,3,1]]],
                  [[[9,5,1],[9,6,1]],[[9,8,1],[9,9,1]],[[7,4,1],[7,5,1]],[[7,0,1],[7,1,1],[7,2,1]],[[7,7,1],[7,8,1],[7,9,1]],[[9,0,1],[9,1,1],[9,2,1],[9,3,1]]],
@@ -39,38 +46,34 @@ def enemy():
                  [[[9,0,1],[9,1,1]],[[0,6,1],[0,7,1]],[[0,9,1],[1,9,1]],[[0,0,1],[1,0,1],[2,0,1]],[[0,2,1],[0,3,1],[0,4,1]],[[4,0,1],[5,0,1],[6,0,1],[7,0,1]]],
                  [[[6,0,1],[7,0,1]],[[1,9,1],[2,9,1]],[[9,4,1],[9,5,1]],[[9,0,1],[9,1,1],[9,2,1]],[[9,7,1],[9,8,1],[9,9,1]],[[4,9,1],[5,9,1],[6,9,1],[7,9,1]]]]
     strategy = random.randrange(len(templates))
-    I.loes[:0] = templates[strategy]
+    los[:0] = templates[strategy]
     temp = tuple()  # Tuple of tuples of all enemy ships
-    for os_y in range(len(I.loes)):
-        for os_x in range(len(I.loes[os_y])):
-            temp += (tuple(I.loes[os_y][os_x]),)
-            if I.debug_mode == 1:
-                I.map_enemy[I.loes[os_y][os_x][1]][I.loes[os_y][os_x][0]] = I.tile_ship
+    for os_y in range(len(los)):
+        for os_x in range(len(los[os_y])):
+            temp += (tuple(los[os_y][os_x]),)
+            if I.debug_mode == 1 or if person != 'enemy:
+                map[los[os_y][os_x][1]][los[os_y][os_x][0]] = I.tile_ship
     for i in range(4):
         while True:
             x = random.randrange(10)
             y = random.randrange(10)
             if (x,y,1) not in temp and (x - 1,y - 1,1) not in temp and (x,y - 1,1) not in temp and (x + 1,y - 1,1) not in temp and (x - 1,y,1) not in temp and (x + 1,y,1) not in temp and (x - 1,y + 1,1) not in temp and (x,y + 1,1) not in temp and (x + 1,y + 1,1) not in temp:
                 temp += ((x,y,1),)
-                I.loes.append([[x,y,1]])
-                if I.debug_mode == 1:
-                    I.map_enemy[y][x] = I.tile_ship
+                los.append([[x,y,1]])
+                if I.debug_mode == 1 or if person != 'enemy:
+                    map[y][x] = I.tile_ship
                 break
+    draw()
 
 
 def draw():
     print(chr(27) + "[2J")
-    for i in range(len(I.map_player)):
-        if i == 0:
-            print('  Противник         Флот ')
-            print('  ABCDEFGHIJ        ABCDEFGHIJ ')
-            print(' ╔══════════╗      ╔══════════╗')
-            print('0║' + ''.join(I.map_enemy[i]) + '║     ' + '0║' + ''.join(I.map_player[i]) + '║')
-        elif i == 9:
-            print('9║' + ''.join(I.map_enemy[i]) + '║     ' + '9║' + ''.join(I.map_player[i]) + '║')
-            print(' ╚══════════╝      ╚══════════╝')
-        else:
-            print(str(i) + '║' + ''.join(I.map_enemy[i]) + '║     ' + str(i) + '║' + ''.join(I.map_player[i]) + '║')
+    print('  Противник                  Флот ')
+    print('  A B C D E F G H I J        A B C D E F G H I J')
+    print(' ╔{0}╗      ╔{0}╗'.format('═' * 19))
+    for line in range(10):
+        print('{0}║{1}║{0:>6}║{2}║'.format(line, I.tile_border.join(I.map_enemy[line]), I.tile_border.join(I.map_player[line])))
+    print(' ╚{0}╝      ╚{0}╝'.format('═' * 19))
 
 
 def place():
@@ -128,30 +131,7 @@ def place():
                     warning('Некорректные координаты.')
             draw()
     else:
-        templates = [[[[0,4,1],[0,5,1]],[[9,0,1],[9,1,1]],[[9,3,1],[9,4,1]],[[0,0,1],[0,1,1],[0,2,1]],[[0,7,1],[0,8,1],[0,9,1]],[[9,6,1],[9,7,1],[9,8,1],[9,9,1]]],
-                     [[[0,5,1],[0,6,1]],[[0,8,1],[0,9,1]],[[2,4,1],[2,5,1]],[[2,0,1],[2,1,1],[2,2,1]],[[2,7,1],[2,8,1],[2,9,1]],[[0,0,1],[0,1,1],[0,2,1],[0,3,1]]],
-                     [[[9,5,1],[9,6,1]],[[9,8,1],[9,9,1]],[[7,4,1],[7,5,1]],[[7,0,1],[7,1,1],[7,2,1]],[[7,7,1],[7,8,1],[7,9,1]],[[9,0,1],[9,1,1],[9,2,1],[9,3,1]]],
-                     [[[0,2,1],[1,2,1]],[[5,0,1],[6,0,1]],[[8,0,1],[9,0,1]],[[3,2,1],[4,2,1],[5,2,1]],[[7,2,1],[8,2,1],[9,2,1]],[[0,0,1],[1,0,1],[2,0,1],[3,0,1]]],
-                     [[[0,7,1],[1,7,1]],[[8,7,1],[9,7,1]],[[0,9,1],[1,9,1]],[[3,9,1],[4,9,1],[5,9,1]],[[7,9,1],[8,9,1],[9,9,1]],[[3,7,1],[4,7,1],[5,7,1],[6,7,1]]],
-                     [[[9,0,1],[9,1,1]],[[0,6,1],[0,7,1]],[[0,9,1],[1,9,1]],[[0,0,1],[1,0,1],[2,0,1]],[[0,2,1],[0,3,1],[0,4,1]],[[4,0,1],[5,0,1],[6,0,1],[7,0,1]]],
-                     [[[6,0,1],[7,0,1]],[[1,9,1],[2,9,1]],[[9,4,1],[9,5,1]],[[9,0,1],[9,1,1],[9,2,1]],[[9,7,1],[9,8,1],[9,9,1]],[[4,9,1],[5,9,1],[6,9,1],[7,9,1]]]]
-        strategy = random.randrange(len(templates))
-        I.lops[:0] = templates[strategy]
-        temp = ()  # Tuple of tuples of all players ships
-        for os_y in range(len(I.lops)):
-            for os_x in range(len(I.lops[os_y])):
-                temp += (tuple(I.lops[os_y][os_x]),)
-                I.map_player[I.lops[os_y][os_x][1]][I.lops[os_y][os_x][0]] = I.tile_ship
-        for i in range(4):
-            while True:
-                x = random.randrange(10)
-                y = random.randrange(10)
-                if (x,y,1) not in temp and (x - 1,y - 1,1) not in temp and (x,y - 1,1) not in temp and (x + 1,y - 1,1) not in temp and (x - 1,y,1) not in temp and (x + 1,y,1) not in temp and (x - 1,y + 1,1) not in temp and (x,y + 1,1) not in temp and (x + 1,y + 1,1) not in temp:
-                    temp += ((x,y,1),)
-                    I.lops.append([[x,y,1]])
-                    I.map_player[y][x] = I.tile_ship
-                    break
-        draw()
+        qucik_place('player')
 
 
 def check_node(x, y):
@@ -329,8 +309,7 @@ def win_condition():
 
 
 def main():
-    enemy()
-    draw()
+    qucik_place('enemy')
     place()
     shoot()
 

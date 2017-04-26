@@ -128,8 +128,6 @@ def check_node(x, y):
             return True
         elif I.map_player[y][x] == I.map_player[y + 1][x] == I.map_player[y + 1][x - 1] == I.map_player[y][x - 1] == I.map_player[y][x + 1] == I.map_player[y + 1][x + 1] == I.tile_sea:
             return True
-        else:
-            return False
     elif y == 9:
         if x == 0 and pattern_a(x, y):
             return True
@@ -137,8 +135,6 @@ def check_node(x, y):
             return True
         elif pattern_b(x, y) and I.map_player[y][x + 1] == I.map_player[y - 1][x + 1] == I.tile_sea:
             return True
-        else:
-            return False
     else:
         if x == 0 and pattern_a(x, y) and I.map_player[y + 1][x] == I.map_player[y + 1][x + 1] == I.tile_sea:
             return True
@@ -146,8 +142,6 @@ def check_node(x, y):
             return True
         elif pattern_b(x, y) and I.map_player[y][x + 1] == I.map_player[y + 1][x + 1] == I.map_player[y][x - 1] == I.map_player[y - 1][x + 1] == I.map_player[y + 1][x - 1] == I.map_player[y + 1][x] == I.tile_sea:
             return True
-        else:
-            return False
 
 
 def pattern_a(x, y):
@@ -165,28 +159,22 @@ def check_multy(x, y, z, deck):
             for node in range(deck):
                 if I.map_player[y][x + node] != I.tile_sea:
                     return(False)
-            if check_node(x,y) and check_node(x + (deck - 1),y):
-                for i in range(deck):
-                    I.map_player[y][x + i] = I.tile_ship
-                    temp.append([x + node,y,1])
+            if check_node(x, y) and check_node(x + (deck - 1), y):
+                for node in range(deck):
+                    I.map_player[y][x + node] = I.tile_ship
+                    temp.append([x + node, y, 1])
                 I.lops.append(temp)
                 return(True)
-            else:
-                return(False)
         else:
-            for i in range(deck):
-                if I.map_player[y + i][x] != I.tile_sea:
+            for node in range(deck):
+                if I.map_player[y + node][x] != I.tile_sea:
                     return(False)
-                if check_node(x,y) and check_node(x,y + (deck - 1)):
-                    for i in range(deck):
-                        I.map_player[y + i][x] = I.tile_ship
-                        temp.append([x,y + i,1])
+                if check_node(x, y) and check_node(x, y + (deck - 1)):
+                    for node in range(deck):
+                        I.map_player[y + node][x] = I.tile_ship
+                        temp.append([x, y + node,1])
                     I.lops.append(temp)
                     return(True)
-                else:
-                    return(False)
-    else:
-        return(False)
 
 
 def shoot():

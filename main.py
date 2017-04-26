@@ -122,29 +122,29 @@ def place():
 
 def check_node(x, y):
     if y == 0:
-        if x == 0 and I.map_player[y][x] == I.tile_sea and I.map_player[y + 1][x] == I.tile_sea and I.map_player[y + 1][x + 1] == I.tile_sea and I.map_player[y][x + 1] == I.tile_sea:
+        if x == 0 and I.map_player[y][x] == I.map_player[y + 1][x] == I.map_player[y + 1][x + 1] == I.map_player[y][x + 1] == I.tile_sea:
             return(True)
-        elif x == 9 and I.map_player[y][x] == I.tile_sea and I.map_player[y + 1][x - 1] == I.tile_sea and I.map_player[y + 1][x] == I.tile_sea and I.map_player[y][x - 1] == I.tile_sea:
+        elif x == 9 and I.map_player[y][x] == I.map_player[y + 1][x] == I.map_player[y + 1][x - 1] == I.map_player[y][x - 1] == I.tile_sea:
             return(True)
-        elif I.map_player[y][x] == I.tile_sea and I.map_player[y + 1][x - 1] == I.tile_sea and I.map_player[y + 1][x] == I.tile_sea and I.map_player[y + 1][x + 1] == I.tile_sea and I.map_player[y][x - 1] == I.tile_sea and I.map_player[y][x + 1] == I.tile_sea:
+        elif I.map_player[y][x] == I.map_player[y + 1][x] == I.map_player[y + 1][x - 1] == I.map_player[y][x - 1] == I.map_player[y][x + 1] == I.map_player[y + 1][x + 1] == I.tile_sea:
             return(True)
         else:
             return(False)
     elif y == 9:
-        if x == 0 and I.map_player[y][x] == I.tile_sea and I.map_player[y - 1][x] == I.tile_sea and I.map_player[y - 1][x + 1] == I.tile_sea and I.map_player[y][x + 1] == I.tile_sea:
+        if x == 0 and I.map_player[y][x] == I.map_player[y - 1][x] == I.map_player[y - 1][x + 1] == I.map_player[y][x + 1] == I.tile_sea:
             return(True)
-        elif x == 9 and I.map_player[y][x] == I.tile_sea and I.map_player[y - 1][x - 1] == I.tile_sea and I.map_player[y - 1][x] == I.tile_sea and I.map_player[y][x - 1] == I.tile_sea:
+        elif x == 9 and I.map_player[y][x] == I.map_player[y - 1][x] == I.map_player[y - 1][x - 1] == I.map_player[y][x - 1] == I.tile_sea:
             return(True)
-        elif I.map_player[y][x] == I.tile_sea and I.map_player[y - 1][x - 1] == I.tile_sea and I.map_player[y - 1][x] == I.tile_sea and I.map_player[y - 1][x + 1] == I.tile_sea and I.map_player[y][x - 1] == I.tile_sea and I.map_player[y][x + 1] == I.tile_sea:
+        elif I.map_player[y][x] == I.map_player[y - 1][x] == I.map_player[y - 1][x - 1] == I.map_player[y][x - 1] == I.map_player[y][x + 1] == I.map_player[y - 1][x + 1] == I.tile_sea:
             return(True)
         else:
             return(False)
     else:
-        if x == 0 and I.map_player[y][x] == I.tile_sea and I.map_player[y - 1][x] == I.tile_sea and I.map_player[y - 1][x + 1] == I.tile_sea and I.map_player[y][x + 1] == I.tile_sea and I.map_player[y + 1][x] == I.tile_sea and I.map_player[y + 1][x + 1] == I.tile_sea:
+        if x == 0 and I.map_player[y][x] == I.map_player[y - 1][x] == I.map_player[y - 1][x + 1] == I.map_player[y][x + 1] == I.map_player[y + 1][x] == I.map_player[y + 1][x + 1] == I.tile_sea:
             return(True)
-        elif x == 9 and I.map_player[y][x] == I.tile_sea and I.map_player[y - 1][x] == I.tile_sea and I.map_player[y - 1][x - 1] == I.tile_sea and I.map_player[y][x - 1] == I.tile_sea and I.map_player[y + 1][x] == I.tile_sea and I.map_player[y + 1][x - 1] == I.tile_sea:
+        elif x == 9 and I.map_player[y][x] == I.map_player[y - 1][x] == I.map_player[y - 1][x - 1] == I.map_player[y][x - 1] == I.map_player[y + 1][x] == I.map_player[y + 1][x - 1] == I.tile_sea:
             return(True)
-        elif I.map_player[y][x] == I.tile_sea and I.map_player[y - 1][x - 1] == I.tile_sea and I.map_player[y - 1][x] == I.tile_sea and I.map_player[y - 1][x + 1] == I.tile_sea and I.map_player[y][x - 1] == I.tile_sea and I.map_player[y][x + 1] == I.tile_sea and I.map_player[y + 1][x - 1] == I.tile_sea and I.map_player[y + 1][x] == I.tile_sea and I.map_player[y + 1][x + 1] == I.tile_sea:
+        elif I.map_player[y][x] == I.map_player[y - 1][x] == I.map_player[y - 1][x - 1] == I.map_player[y][x - 1] == I.map_player[y][x + 1] == I.map_player[y + 1][x + 1] == I.map_player[y][x - 1] == I.map_player[y - 1][x + 1] == I.map_player[y + 1][x - 1] == I.map_player[y + 1][x] == I.tile_sea:
             return(True)
         else:
             return(False)

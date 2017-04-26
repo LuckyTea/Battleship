@@ -89,19 +89,13 @@ def place():
                             x = I.os[x]
                             y = int(y)
                         else:
-                            raise
-                        if x not in range(0,10):
-                            warning('Х за пределами')
-                            raise
-                        if y not in range(0,10):
-                            warning('У за пределами')
-                            raise
+                            raise Exception('Слишком много координат')
                         if check_node(x, y):
                             I.map_player[y][x] = I.tile_ship
                             I.lops.append([x,y,1])
                             break
                         else:
-                            raise
+                            raise Exception('Некорректные координаты')
                     else:
                         position = input('Где и как разместить {} (например: HА0 или VA0): '.format(I.ships_list[current_ship])).lower()
                         if len(position) == 3:
@@ -109,26 +103,18 @@ def place():
                             x = I.os[x]
                             y = int(y)
                         else:
-                            raise
-                        if x not in range(0,10):
-                            warning('Х за пределами')
-                            raise
-                        if y not in range(0,10):
-                            warning('У за пределами')
-                            raise
+                            raise Exception('Слишком много координат')
                         if z != 'h' and z != 'v':
-                            warning('Неверное позиционирование (H)orizontal или (V)ertical')
-                            raise
+                            raise Exception('Неверное позиционирование (H)orizontal или (V)ertical')
                         if check_multy(x, y, z, deck):
                             break
                         else:
-                            raise
+                            raise Exception('Некорректные координаты')
                 except KeyboardInterrupt:
-                    warning('ABORT')
+                    warning('\nABORT')
                     sys.exit()
                 except:
-                    print(sys.exc_info())
-                    warning('Некорректные координаты.')
+                    warning(str(sys.exc_info()[1]))
             draw()
     else:
         qucik_place('player')

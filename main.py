@@ -179,7 +179,7 @@ def check_multy(x, y, z, deck):
 
 def shoot():
     while True:
-        I.turns = I.turns + 1
+        I.turns += 1
         try:
             pos = input('Наводка орудия (например: А0): ').lower()
             if len(pos) == 2:
@@ -187,12 +187,6 @@ def shoot():
                 x = I.os[x]
                 y = int(y)
             else:
-                raise
-            if x not in range(0,10):
-                warning('Х за пределами')
-                raise
-            if y not in range(0,10):
-                warning('У за пределами')
                 raise
             k = shoot_check(x,y,'a')
             if k == [1,0]:
@@ -218,8 +212,7 @@ def shoot():
         except SystemExit:
             sys.exit()
         except:
-            print(sys.exc_info())
-            warning('Некорректные координаты.')
+            warning(str('Некорректные координаты'))
 
 
 def shoot_check(x,y,person):

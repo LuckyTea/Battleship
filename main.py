@@ -123,31 +123,39 @@ def place():
 def check_node(x, y):
     if y == 0:
         if x == 0 and I.map_player[y][x] == I.map_player[y + 1][x] == I.map_player[y + 1][x + 1] == I.map_player[y][x + 1] == I.tile_sea:
-            return(True)
+            return True
         elif x == 9 and I.map_player[y][x] == I.map_player[y + 1][x] == I.map_player[y + 1][x - 1] == I.map_player[y][x - 1] == I.tile_sea:
-            return(True)
+            return True
         elif I.map_player[y][x] == I.map_player[y + 1][x] == I.map_player[y + 1][x - 1] == I.map_player[y][x - 1] == I.map_player[y][x + 1] == I.map_player[y + 1][x + 1] == I.tile_sea:
-            return(True)
+            return True
         else:
-            return(False)
+            return False
     elif y == 9:
-        if x == 0 and I.map_player[y][x] == I.map_player[y - 1][x] == I.map_player[y - 1][x + 1] == I.map_player[y][x + 1] == I.tile_sea:
-            return(True)
-        elif x == 9 and I.map_player[y][x] == I.map_player[y - 1][x] == I.map_player[y - 1][x - 1] == I.map_player[y][x - 1] == I.tile_sea:
-            return(True)
-        elif I.map_player[y][x] == I.map_player[y - 1][x] == I.map_player[y - 1][x - 1] == I.map_player[y][x - 1] == I.map_player[y][x + 1] == I.map_player[y - 1][x + 1] == I.tile_sea:
-            return(True)
+        if x == 0 and pattern_a(x, y):
+            return True
+        elif x == 9 and pattern_b(x, y):
+            return True
+        elif pattern_b(x, y) and I.map_player[y][x + 1] == I.map_player[y - 1][x + 1] == I.tile_sea:
+            return True
         else:
-            return(False)
+            return False
     else:
-        if x == 0 and I.map_player[y][x] == I.map_player[y - 1][x] == I.map_player[y - 1][x + 1] == I.map_player[y][x + 1] == I.map_player[y + 1][x] == I.map_player[y + 1][x + 1] == I.tile_sea:
-            return(True)
-        elif x == 9 and I.map_player[y][x] == I.map_player[y - 1][x] == I.map_player[y - 1][x - 1] == I.map_player[y][x - 1] == I.map_player[y + 1][x] == I.map_player[y + 1][x - 1] == I.tile_sea:
-            return(True)
-        elif I.map_player[y][x] == I.map_player[y - 1][x] == I.map_player[y - 1][x - 1] == I.map_player[y][x - 1] == I.map_player[y][x + 1] == I.map_player[y + 1][x + 1] == I.map_player[y][x - 1] == I.map_player[y - 1][x + 1] == I.map_player[y + 1][x - 1] == I.map_player[y + 1][x] == I.tile_sea:
-            return(True)
+        if x == 0 and pattern_a(x, y) and I.map_player[y + 1][x] == I.map_player[y + 1][x + 1] == I.tile_sea:
+            return True
+        elif x == 9 and pattern_b(x, y) and I.map_player[y + 1][x] == I.map_player[y + 1][x - 1] == I.tile_sea:
+            return True
+        elif pattern_b(x, y) and I.map_player[y][x + 1] == I.map_player[y + 1][x + 1] == I.map_player[y][x - 1] == I.map_player[y - 1][x + 1] == I.map_player[y + 1][x - 1] == I.map_player[y + 1][x] == I.tile_sea:
+            return True
         else:
-            return(False)
+            return False
+
+
+def pattern_a(x, y):
+    return True if I.map_player[y][x] == I.map_player[y - 1][x] == I.map_player[y - 1][x + 1] == I.map_player[y][x + 1] == I.tile_sea else False
+
+
+def pattern_b(x, y):
+    return True if I.map_player[y][x] == I.map_player[y - 1][x] == I.map_player[y - 1][x - 1] == I.map_player[y][x - 1] == I.tile_sea else False
 
 
 def check_multy(x, y, z, deck):

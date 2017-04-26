@@ -188,7 +188,7 @@ def shoot():
                 y = int(y)
             else:
                 raise
-            k = shoot_check(x,y,'a')
+            k = shoot_check(x,y,'player')
             if k == [1,0]:
                 I.map_enemy[y][x] = I.tile_ship_dead
                 draw()
@@ -207,7 +207,7 @@ def shoot():
                 warning('Мимо!')
                 enemy_turn()
         except KeyboardInterrupt:
-            warning('ABORT')
+            warning('\nABORT')
             sys.exit()
         except SystemExit:
             sys.exit()
@@ -216,55 +216,39 @@ def shoot():
 
 
 def shoot_check(x,y,person):
-    deck_alive = 0
-    if person == 'a':
-        for ship in range(len(I.loes)):
-            if [x,y,1] in I.loes[ship]:
-                I.loes[ship][I.loes[ship].index([x,y,1])] = [x,y,0]
-                for deck in range(len(I.loes[ship])):
-                    deck_alive += I.loes[ship][deck][2]
-                if deck_alive == 0:
-                    for deck in range(len(I.loes[ship])):
-                        x1,y1,z1 = list(I.loes[ship][deck])
-                        for iii in range(8):
-                            I.map_enemy[(0 if ((y1 - 1) < 0) else y1 - 1)][(0 if ((x1 - 1) < 0) else x1 - 1)] = \
-                                I.map_enemy[(0 if ((y1 - 1) < 0) else y1 - 1)][x1] = I.map_enemy[(0 if ((y1 - 1) < 0) else y1 - 1)][(9 if ((x1 + 1) > 9) else x1 + 1)] = \
-                                I.map_enemy[y1][(0 if ((x1 - 1) < 0) else x1 - 1)] = I.map_enemy[y1][(9 if ((x1 + 1) > 9) else x1 + 1)] = \
-                                I.map_enemy[(9 if ((y1 + 1) > 9) else y1 + 1)][(0 if ((x1 - 1) < 0) else x1 - 1)] = I.map_enemy[(9 if ((y1 + 1) > 9) else y1 + 1)][x1] = \
-                                I.map_enemy[(9 if ((y1 + 1) > 9) else y1 + 1)][(9 if ((x1 + 1) > 9) else x1 + 1)] = I.tile_miss
-                    for deck in range(len(I.loes[ship])):
-                        x1,y1,z1 = list(I.loes[ship][deck])
-                        I.map_enemy[y1][x1] = I.tile_ship_dead
-                    return([1,1])
-                else:
-                    return([1,0])
+    if person == 'player':
+        los = I.loes
+        map = I.map_enemy
     else:
-        for ship in range(len(I.lops)):
-            if [x,y,1] in I.lops[ship]:
-                I.lops[ship][I.lops[ship].index([x,y,1])] = [x,y,0]
-                for deck in range(len(I.lops[ship])):
-                    deck_alive += I.lops[ship][deck][2]
-                if deck_alive == 0:
-                    for deck in range(len(I.lops[ship])):
-                        x1,y1,z1 = list(I.lops[ship][deck])
-                        for iii in range(8):
-                            I.map_player[(0 if ((y1 - 1) < 0) else y1 - 1)][(0 if ((x1 - 1) < 0) else x1 - 1)] = \
-                                I.map_player[(0 if ((y1 - 1) < 0) else y1 - 1)][x1] = I.map_player[(0 if ((y1 - 1) < 0) else y1 - 1)][(9 if ((x1 + 1) > 9) else x1 + 1)] = \
-                                I.map_player[y1][(0 if ((x1 - 1) < 0) else x1 - 1)] = I.map_player[y1][(9 if ((x1 + 1) > 9) else x1 + 1)] = \
-                                I.map_player[(9 if ((y1 + 1) > 9) else y1 + 1)][(0 if ((x1 - 1) < 0) else x1 - 1)] = I.map_player[(9 if ((y1 + 1) > 9) else y1 + 1)][x1] = \
-                                I.map_player[(9 if ((y1 + 1) > 9) else y1 + 1)][(9 if ((x1 + 1) > 9) else x1 + 1)] = I.tile_miss
-                    for deck in range(len(I.lops[ship])):
-                        x1,y1,z1 = list(I.lops[ship][deck])
-                        I.map_player[y1][x1] = I.tile_ship_dead
-                    return([1,1])
-                else:
-                    return([1,0])
+        los = I.lops
+        map = I.map_player
+    deck_alive = 0
+    for ship in range(10):
+        if [x,y,1] in los[ship]:  # find node in ship list
+            los[ship][los[ship].index([x,y,1])] = [x,y,0]
+            for deck in range(len(los[ship])):
+                deck_alive += los[ship][deck][2]
+            if deck_alive == 0:
+                for deck in range(len(los[ship])):
+                    x1,y1,z1 = list(los[ship][deck])
+                    for i in range(8):  # mark area around ship deck
+                        map[(0 if ((y1 - 1) < 0) else y1 - 1)][(0 if ((x1 - 1) < 0) else x1 - 1)] = \
+                            map[(0 if ((y1 - 1) < 0) else y1 - 1)][x1] = map[(0 if ((y1 - 1) < 0) else y1 - 1)][(9 if ((x1 + 1) > 9) else x1 + 1)] = \
+                            map[y1][(0 if ((x1 - 1) < 0) else x1 - 1)] = map[y1][(9 if ((x1 + 1) > 9) else x1 + 1)] = \
+                            map[(9 if ((y1 + 1) > 9) else y1 + 1)][(0 if ((x1 - 1) < 0) else x1 - 1)] = map[(9 if ((y1 + 1) > 9) else y1 + 1)][x1] = \
+                            map[(9 if ((y1 + 1) > 9) else y1 + 1)][(9 if ((x1 + 1) > 9) else x1 + 1)] = I.tile_miss
+                for deck in range(len(los[ship])):  # mark dead deck
+                    x1,y1,z1 = list(los[ship][deck])
+                    map[y1][x1] = I.tile_ship_dead
+                return([1,1])  # ship destroyed
+            else:
+                return([1,0])  # deck destroyed
 
 
 def enemy_turn():
     x = random.randrange(10)
     y = random.randrange(10)
-    shoot_result = shoot_check(x,y,'e')
+    shoot_result = shoot_check(x,y,'enemy')
     if shoot_result == [1,0] or shoot_result == [1,1]:
         I.map_player[y][x] = I.tile_ship_dead
         draw()

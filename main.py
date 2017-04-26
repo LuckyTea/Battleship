@@ -47,11 +47,11 @@ def qucik_place(person):
                  [[[6,0,1],[7,0,1]],[[1,9,1],[2,9,1]],[[9,4,1],[9,5,1]],[[9,0,1],[9,1,1],[9,2,1]],[[9,7,1],[9,8,1],[9,9,1]],[[4,9,1],[5,9,1],[6,9,1],[7,9,1]]]]
     strategy = random.randrange(len(templates))
     los[:0] = templates[strategy]
-    temp = tuple()  # Tuple of tuples of all enemy ships
+    temp = tuple()  # Tuple of tuples of all ships
     for os_y in range(len(los)):
         for os_x in range(len(los[os_y])):
             temp += (tuple(los[os_y][os_x]),)
-            if I.debug_mode == 1 or if person != 'enemy:
+            if I.debug_mode == 1 or person != 'enemy':
                 map[los[os_y][os_x][1]][los[os_y][os_x][0]] = I.tile_ship
     for i in range(4):
         while True:
@@ -60,7 +60,7 @@ def qucik_place(person):
             if (x,y,1) not in temp and (x - 1,y - 1,1) not in temp and (x,y - 1,1) not in temp and (x + 1,y - 1,1) not in temp and (x - 1,y,1) not in temp and (x + 1,y,1) not in temp and (x - 1,y + 1,1) not in temp and (x,y + 1,1) not in temp and (x + 1,y + 1,1) not in temp:
                 temp += ((x,y,1),)
                 los.append([[x,y,1]])
-                if I.debug_mode == 1 or if person != 'enemy:
+                if I.debug_mode == 1 or person != 'enemy':
                     map[y][x] = I.tile_ship
                 break
     draw()

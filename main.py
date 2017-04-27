@@ -1,3 +1,6 @@
+'''
+Information placeholder
+'''
 import random
 import sys
 

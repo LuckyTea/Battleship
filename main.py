@@ -249,8 +249,11 @@ def shoot_check(x,y,person):
 
 
 def enemy_turn():
-    x = random.randrange(10)
-    y = random.randrange(10)
+    while True:
+        x = random.randrange(10)
+        y = random.randrange(10)
+        if I.map_player[y][x] == I.tile_sea or I.map_player[y][x] == I.tile_ship:
+            break
     shoot_result = shoot_check(x,y,'enemy')
     if shoot_result == [1,0] or shoot_result == [1,1]:
         I.map_player[y][x] = I.tile_ship_dead
@@ -258,8 +261,9 @@ def enemy_turn():
         input('{}{}, противник попал.'.format(I.ros[x],y))
         enemy_turn()
     else:
-        print('{}{}, противник промазал.'.format(I.ros[x],y))
-        pass
+        I.map_player[y][x] = I.tile_miss
+        input('{}{}, противник промазал.'.format(I.ros[x],y))
+        draw()
 
 
 def win_condition():

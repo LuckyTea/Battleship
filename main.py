@@ -18,7 +18,8 @@ class Initiation():
         self.tile_miss = '\x1b[5;37;44m' + '◌' + '\x1b[0m'
         self.tile_border = '\x1b[5;34;44m' + '║' + '\x1b[0m'
         self.turns = 0
-        self.deck_alive = 20
+        self.deck_enemy = 20
+        self.deck_player = 20
         self.lops = []  # List of Players Ships
         self.loes = []  # List of Enemys Ships
         self.map_enemy = [[self.tile_sea] * 10 for i in range(10)]
@@ -196,13 +197,13 @@ def shoot():
                 I.map_enemy[y][x] = I.tile_ship_dead
                 draw()
                 warning('Попадание!')
-                I.deck_alive -= 1
+                I.deck_enemy -= 1
             elif k == [1,1]:
                 I.map_enemy[y][x] = I.tile_ship_dead
                 draw()
                 warning('Корабль потоплен!')
-                I.deck_alive -= 1
-                win_condition()
+                I.deck_enemy -= 1
+                win_condition('player')
             else:
                 if I.map_enemy[y][x] != I.tile_ship_dead:
                     I.map_enemy[y][x] = I.tile_miss
@@ -259,6 +260,8 @@ def enemy_turn():
         I.map_player[y][x] = I.tile_ship_dead
         draw()
         input('{}{}, противник попал.'.format(I.ros[x],y))
+        I.deck_player -= 1
+        win_condition('enemy')
         enemy_turn()
     else:
         I.map_player[y][x] = I.tile_miss
@@ -266,12 +269,19 @@ def enemy_turn():
         draw()
 
 
-def win_condition():
-    if I.deck_alive == 0:
-        warning('Ты победил врага на {} ход!'.format(I.turns))
-        sys.exit()
+def win_condition(person):
+    if person == 'player':
+        if I.deck_enemy == 0:
+            warning('Ты победил врага на {} ход!'.format(I.turns))
+            sys.exit()
+        else:
+            print('{} палуб врага осталось'.format(I.deck_enemy))
     else:
-        print('{} палуб врага осталось'.format(I.deck_alive))
+        if I.deck_player == 0:
+            warning('Противник победил на {} ход!'.format(I.turns))
+            sys.exit()
+        else:
+            print('{} палуб игрока осталось'.format(I.deck_player))
 
 
 def main():

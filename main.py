@@ -27,7 +27,7 @@ class Initiation():
         self.os = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4, 'f':5, 'g':6, 'h':7, 'i':8, 'j':9}
         self.ros = {0:'A', 1:'B', 2:'C', 3:'D', 4:'E', 5:'F', 6:'G', 7:'H', 8:'I', 9:'J'}
         self.ships_list = ('катер 1', 'катер 2', 'катер 3', 'катер 4', 'эсминец 1', 'эсминец 2', 'эсминец 3', 'крейсер 1', 'крейсер 2', 'линкор')
-        self.ships = {'катер 1':1, 'катер 2':1, 'катер 3':1, 'катер 4':1, 'эсминец 1':2, 'эсминец 2':2, 'эсминец 3':2, 'крейсер 1':3, 'крейсер 2':3, 'линкор':4}
+        self.ships = dict(zip(self.ships_list,(1,1,1,1,2,2,2,3,3,4)))
         main()
 
 
@@ -109,7 +109,7 @@ def place():
                         else:
                             raise Exception('Слишком много координат')
                         if z != 'h' and z != 'v':
-                            raise Exception('Неверное позиционирование (H)orizontal или (V)ertical')
+                            raise Exception('Неверное позиционирование [H]orizontal или [V]ertical')
                         if check_multy(x, y, z, deck):
                             break
                         else:
@@ -259,13 +259,13 @@ def enemy_turn():
     if shoot_result == [1,0] or shoot_result == [1,1]:
         I.map_player[y][x] = I.tile_ship_dead
         draw()
-        input('{}{}, противник попал.'.format(I.ros[x],y))
+        input('{}{}, противник попал'.format(I.ros[x],y))
         I.deck_player -= 1
         win_condition('enemy')
         enemy_turn()
     else:
         I.map_player[y][x] = I.tile_miss
-        input('{}{}, противник промазал.'.format(I.ros[x],y))
+        input('{}{}, противник промазал'.format(I.ros[x],y))
         draw()
 
 

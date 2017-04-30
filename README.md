@@ -4,3 +4,6 @@ Simple battleship console solo-game.
 
 ## Debug mode
 Launch main.py with *--D* or *-debug* key
+
+## Screenshot
+![scrn](https://github.com/LuckyTea/Battleship/blob/master/scrn.png)

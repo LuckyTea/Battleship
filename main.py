@@ -26,7 +26,7 @@ class Initiation():
         self.map_player = [[self.tile_sea] * 10 for i in range(10)]
         self.os = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4, 'f':5, 'g':6, 'h':7, 'i':8, 'j':9}
         self.ros = {0:'A', 1:'B', 2:'C', 3:'D', 4:'E', 5:'F', 6:'G', 7:'H', 8:'I', 9:'J'}
-        self.ships_list = ('катер 1', 'катер 2', 'катер 3', 'катер 4', 'эсминец 1', 'эсминец 2', 'эсминец 3', 'крейсер 1', 'крейсер 2', 'линкор')
+        self.ships_list = ('submarine  1', 'submarine  2', 'submarine  3', 'submarine  4', 'destroyer 1', 'destroyer 2', 'destroyer 3', 'cruiser 1', 'cruiser 2', 'battleship')
         self.ships = dict(zip(self.ships_list,(1,1,1,1,2,2,2,3,3,4)))
         main()
 
@@ -72,7 +72,7 @@ def qucik_place(person):
 
 def draw():
     print(chr(27) + "[2J")
-    print('  Противник                  Флот ')
+    print('  Enemy Ships                Your Ships')
     print('  A B C D E F G H I J        A B C D E F G H I J')
     print(' ╔{0}╗      ╔{0}╗'.format('═' * 19))
     for line in range(10):
@@ -87,33 +87,33 @@ def place():
                 deck = I.ships[I.ships_list[current_ship]]
                 try:
                     if current_ship < 4:
-                        position = input('Где разместить {} (например: А0): '.format(I.ships_list[current_ship])).lower()
+                        position = input('Where to arrange the {} (example: А0): '.format(I.ships_list[current_ship])).lower()
                         if len(position) == 2:
                             x,y = list(position)
                             x = I.os[x]
                             y = int(y)
                         else:
-                            raise Exception('Слишком много координат')
+                            raise Exception('Incorrect coordinates')
                         if check_node(x, y):
                             I.map_player[y][x] = I.tile_ship
                             I.lops.append([x,y,1])
                             break
                         else:
-                            raise Exception('Некорректные координаты')
+                            raise Exception('Incorrect coordinates')
                     else:
-                        position = input('Где и как разместить {} (например: HА0 или VA0): '.format(I.ships_list[current_ship])).lower()
+                        position = input('Where to arrange the {} (example: HА0 or VA0): '.format(I.ships_list[current_ship])).lower()
                         if len(position) == 3:
                             z,x,y = list(position)
                             x = I.os[x]
                             y = int(y)
                         else:
-                            raise Exception('Слишком много координат')
+                            raise Exception('Incorrect coordinates')
                         if z != 'h' and z != 'v':
-                            raise Exception('Неверное позиционирование [H]orizontal или [V]ertical')
+                            raise Exception('Incorrect positioning [H]orizontal or [V]ertical')
                         if check_multy(x, y, z, deck):
                             break
                         else:
-                            raise Exception('Некорректные координаты')
+                            raise Exception('Incorrect coordinates')
                 except KeyboardInterrupt:
                     warning('\nABORT')
                     sys.exit()
@@ -185,7 +185,7 @@ def shoot():
     while True:
         I.turns += 1
         try:
-            pos = input('Наводка орудия (например: А0): ').lower()
+            pos = input('Aiming (example: А0): ').lower()
             if len(pos) == 2:
                 x,y = list(pos)
                 x = I.os[x]
@@ -196,19 +196,19 @@ def shoot():
             if k == [1,0]:
                 I.map_enemy[y][x] = I.tile_ship_dead
                 draw()
-                warning('Попадание!')
+                warning('Hit!')
                 I.deck_enemy -= 1
             elif k == [1,1]:
                 I.map_enemy[y][x] = I.tile_ship_dead
                 draw()
-                warning('Корабль потоплен!')
+                warning('The ship is sunk!')
                 I.deck_enemy -= 1
                 win_condition('player')
             else:
                 if I.map_enemy[y][x] != I.tile_ship_dead:
                     I.map_enemy[y][x] = I.tile_miss
                 draw()
-                warning('Мимо!')
+                warning('Miss!')
                 enemy_turn()
         except KeyboardInterrupt:
             warning('\nABORT')
@@ -216,7 +216,7 @@ def shoot():
         except SystemExit:
             sys.exit()
         except:
-            warning(str('Некорректные координаты'))
+            warning(str('Incorrect coordinates'))
 
 
 def shoot_check(x,y,person):
@@ -259,29 +259,29 @@ def enemy_turn():
     if shoot_result == [1,0] or shoot_result == [1,1]:
         I.map_player[y][x] = I.tile_ship_dead
         draw()
-        input('{}{}, противник попал'.format(I.ros[x],y))
+        input('{}{}, enemy hit!'.format(I.ros[x],y))
         I.deck_player -= 1
         win_condition('enemy')
         enemy_turn()
     else:
         I.map_player[y][x] = I.tile_miss
-        input('{}{}, противник промазал'.format(I.ros[x],y))
+        input('{}{}, enemy miss!'.format(I.ros[x],y))
         draw()
 
 
 def win_condition(person):
     if person == 'player':
         if I.deck_enemy == 0:
-            warning('Ты победил врага на {} ход!'.format(I.turns))
+            warning('You won by {}th turn!'.format(I.turns))
             sys.exit()
         else:
-            print('{} палуб врага осталось'.format(I.deck_enemy))
+            print('{} decks of the enemy left!'.format(I.deck_enemy))
     else:
         if I.deck_player == 0:
-            warning('Противник победил на {} ход!'.format(I.turns))
+            warning('The enemy won the {}th turn!'.format(I.turns))
             sys.exit()
         else:
-            print('{} палуб игрока осталось'.format(I.deck_player))
+            print('{} yor decks left!'.format(I.deck_player))
 
 
 def main():

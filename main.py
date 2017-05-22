@@ -28,6 +28,9 @@ class Initiation():
         self.ros = {0:'A', 1:'B', 2:'C', 3:'D', 4:'E', 5:'F', 6:'G', 7:'H', 8:'I', 9:'J'}
         self.ships_list = ('submarine  1', 'submarine  2', 'submarine  3', 'submarine  4', 'destroyer 1', 'destroyer 2', 'destroyer 3', 'cruiser 1', 'cruiser 2', 'battleship')
         self.ships = dict(zip(self.ships_list,(1,1,1,1,2,2,2,3,3,4)))
+        self.x = 10
+        self.y = 10
+        self.position = 0
         main()
 
 
@@ -250,20 +253,118 @@ def shoot_check(x,y,person):
 
 
 def enemy_turn():
-    while True:
-        x = random.randrange(10)
-        y = random.randrange(10)
-        if I.map_player[y][x] == I.tile_sea or I.map_player[y][x] == I.tile_ship:
-            break
-    shoot_result = shoot_check(x,y,'enemy')
+    if I.x != 10:
+        enemy_next_turn(I.x, I.y, I.position)
+    else:
+        while True:
+            x = random.randrange(10)
+            y = random.randrange(10)
+            if I.map_player[y][x] in (I.tile_sea, I.tile_ship):
+                break
+        shoot_result = shoot_check(x,y,'enemy')
+        if shoot_result == [1,0] or shoot_result == [1,1]:
+            I.map_player[y][x] = I.tile_ship_dead
+            draw()
+            input('{}{}, enemy hit!'.format(I.ros[x],y))
+            I.deck_player -= 1
+            win_condition('enemy')
+            if shoot_result == [1,1]:
+                enemy_turn()
+            else:
+                I.x = x
+                I.y = y
+                enemy_next_turn(I.x, I.y, I.position)
+        else:
+            I.map_player[y][x] = I.tile_miss
+            input('{}{}, enemy miss!'.format(I.ros[x],y))
+            draw()
+
+
+def enemy_next_turn(x, y, position):
+    print(x,y,position)
+    if position == 0:
+        while True:
+            position = random.randrange(1,5)
+            if position == 1 and I.map_player[(0 if ((y - 1) < 0) else y - 1)][x] in (I.tile_sea, I.tile_ship):
+                break
+            elif position == 2 and I.map_player[(9 if ((y + 1) > 9) else y + 1)][x] in (I.tile_sea, I.tile_ship):
+                break
+            elif position == 3 and I.map_player[y][(0 if ((x - 1) < 0) else x - 1)] in (I.tile_sea, I.tile_ship):
+                break
+            elif position == 4 and I.map_player[y][(9 if ((x + 1) > 9) else x + 1)] in (I.tile_sea, I.tile_ship):
+                break
+    if I.position == 0:
+        p = position
+    else:
+        p = I.position
+    if p == 1:
+        if I.map_player[(0 if ((y - 1) < 0) else y - 1)][x] in (I.tile_sea, I.tile_ship):
+            y = (0 if ((y - 1) < 0) else y - 1)
+        else:
+            for i in range(2,10):
+                if I.map_player[(0 if ((y - i) < 0) else y - i)][x] == I.tile_ship_dead:
+                    pass
+                else:
+                    y = (0 if ((y - i) < 0) else y - i)
+                    break
+    elif p == 2:
+        if I.map_player[(9 if ((y + 1) > 9) else y + 1)][x] in (I.tile_sea, I.tile_ship):
+            y = (0 if ((y - 1) < 0) else y - 1)
+        else:
+            for i in range(2,10):
+                if I.map_player[(9 if ((y + i) > 9) else y + i)][x] == I.tile_ship_dead:
+                    pass
+                else:
+                    y = (9 if ((y + i) > 9) else y + i)
+                    break
+    elif p == 3:
+        if I.map_player[y][(0 if ((x - 1) < 0) else x - 1)] in (I.tile_sea, I.tile_ship):
+            x = (0 if ((x - 1) < 0) else x - 1)
+        else:
+            for i in range(2,10):
+                if I.map_player[y][(0 if ((x - i) < 0) else x - i)] == I.tile_ship_dead:
+                    pass
+                else:
+                    x = (0 if ((x - i) < 0) else x - i)
+                    break
+    elif p == 4:
+        if I.map_player[y][(9 if ((x + 1) > 9) else x + 1)] in (I.tile_sea, I.tile_ship):
+            x = (9 if ((x + 1) > 9) else x + 1)
+        else:
+            for i in range(2,10):
+                if I.map_player[y][(9 if ((x + i) > 9) else x + i)] == I.tile_ship_dead:
+                    pass
+                else:
+                    x = (9 if ((x + i) > 9) else x + i)
+                    break
+    print(I.map_player[y][x])
+    shoot_result = shoot_check(x, y, 'enemy')
+    print(x,y,position)
     if shoot_result == [1,0] or shoot_result == [1,1]:
         I.map_player[y][x] = I.tile_ship_dead
         draw()
         input('{}{}, enemy hit!'.format(I.ros[x],y))
         I.deck_player -= 1
         win_condition('enemy')
-        enemy_turn()
+        if shoot_result == [1,1]:
+            I.position = 0
+            I.x = 10
+            I.y = 10
+            enemy_turn()
+        else:
+            I.position = p
+            I.x = x
+            I.y = y
+            enemy_next_turn(I.x, I.y, I.position)
     else:
+        if I.position == 1:
+            I.position == 2
+        elif I.position == 2:
+            I.position == 1
+        elif I.position == 3:
+            I.position == 4
+        elif I.position == 4:
+            I.position == 3
         I.map_player[y][x] = I.tile_miss
         input('{}{}, enemy miss!'.format(I.ros[x],y))
         draw()

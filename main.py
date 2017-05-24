@@ -186,7 +186,6 @@ def check_multy(x, y, z, deck):
 
 def shoot():
     while True:
-        I.turns += 1
         try:
             pos = input('Aiming (example: А0): ').lower()
             if len(pos) == 2:
@@ -223,6 +222,7 @@ def shoot():
 
 
 def shoot_check(x,y,person):
+    I.turns += 1
     if person == 'player':
         los = I.loes
         map = I.map_enemy

@@ -35,7 +35,7 @@ class Initiation():
 
 
 def warning(msg):
-    print('\x1b[0;31;40m' + msg + '\x1b[0m')
+    print(f'\x1b[0;31;40m{msg}\x1b[0m')
 
 
 def qucik_place(person):
@@ -74,13 +74,13 @@ def qucik_place(person):
 
 
 def draw():
-    print(chr(27) + "[2J")
+    print(f'{chr(27)+"[2J"}')
     print('  Enemy Ships                Your Ships')
     print('  A B C D E F G H I J        A B C D E F G H I J')
-    print(' ╔{0}╗      ╔{0}╗'.format('═' * 19))
+    print(f' ╔{"═"*19}╗      ╔{"═"*19}╗')
     for line in range(10):
-        print('{0}║{1}║{0:>6}║{2}║'.format(line, I.tile_border.join(I.map_enemy[line]), I.tile_border.join(I.map_player[line])))
-    print(' ╚{0}╝      ╚{0}╝'.format('═' * 19))
+        print(f'{line}║{I.tile_border.join(I.map_enemy[line])}║{line:>6}║{I.tile_border.join(I.map_player[line])}║')
+    print(f' ╚{"═"*19}╝      ╚{"═"*19}╝')
 
 
 def place():
@@ -90,7 +90,7 @@ def place():
                 deck = I.ships[I.ships_list[current_ship]]
                 try:
                     if current_ship < 4:
-                        position = input('Where to arrange the {} (example: А0): '.format(I.ships_list[current_ship])).lower()
+                        position = input(f'Where to arrange the {I.ships_list[current_ship]} (example: А0): ').lower()
                         if len(position) == 2:
                             x,y = list(position)
                             x = I.os[x]
@@ -104,7 +104,7 @@ def place():
                         else:
                             raise Exception('Incorrect coordinates')
                     else:
-                        position = input('Where to arrange the {} (example: HА0 or VA0): '.format(I.ships_list[current_ship])).lower()
+                        position = input(f'Where to arrange the {I.ships_list[current_ship]} (example: HА0 or VA0): ').lower()
                         if len(position) == 3:
                             z,x,y = list(position)
                             x = I.os[x]
@@ -265,7 +265,7 @@ def enemy_turn():
         if shoot_result in ([1,0], [1,1]):
             I.map_player[y][x] = I.tile_ship_dead
             draw()
-            input('{}{}, enemy hit!'.format(I.ros[x],y))
+            input(f'{I.ros[x]}{y}, enemy hit!')
             I.deck_player -= 1
             win_condition('enemy')
             if shoot_result == [1,1]:                                                    # scouting for new ship
@@ -277,7 +277,7 @@ def enemy_turn():
         else:
             I.map_player[y][x] = I.tile_miss
             draw()
-            input('{}{}, enemy miss!'.format(I.ros[x],y))
+            input(f'{I.ros[x]}{y}, enemy miss!')
 
 
 def enemy_next_turn(x, y, position):
@@ -354,7 +354,7 @@ def enemy_next_turn(x, y, position):
     if shoot_result == [1,0] or shoot_result == [1,1]:
         I.map_player[y][x] = I.tile_ship_dead
         draw()
-        input('{}{}, enemy hit!'.format(I.ros[x],y))
+        input(f'{I.ros[x]}{y}, enemy hit!')
         I.deck_player -= 1
         win_condition('enemy')
         if shoot_result == [1,1]:
@@ -375,7 +375,7 @@ def enemy_next_turn(x, y, position):
             I.position += 1
         else:
             I.position -= 1
-        input('{}{}, enemy miss!'.format(I.ros[x],y))
+        input(f'{I.ros[x]}{y}, enemy miss!')
 
 
 def ship_orientation(p, x, y, i=1):
@@ -392,16 +392,16 @@ def ship_orientation(p, x, y, i=1):
 def win_condition(person):
     if person == 'player':
         if I.deck_enemy == 0:
-            warning('You won by {}th turn!'.format(I.turns))
+            warning(f'You won by {I.turns}th turn!')
             sys.exit()
         else:
-            print('{} decks of the enemy left!'.format(I.deck_enemy))
+            print(f'{I.deck_enemy} decks of the enemy left!')
     else:
         if I.deck_player == 0:
-            warning('The enemy won the {}th turn!'.format(I.turns))
+            warning(f'The enemy won the {I.turns}th turn!')
             sys.exit()
         else:
-            print('{} yor decks left!'.format(I.deck_player))
+            print(f'{I.deck_player} yor decks left!')
 
 
 def main():

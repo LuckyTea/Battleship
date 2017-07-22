@@ -1,6 +1,3 @@
-'''
-Information placeholder
-'''
 import random
 import sys
 
@@ -12,11 +9,11 @@ class Initiation():
                 self.debug_mode = 1
         else:
             self.debug_mode = 0
-        self.tile_sea = '\x1b[5;34;44m' + ' ' + '\x1b[0m'
-        self.tile_ship = '\x1b[5;30;47m' + '□' + '\x1b[0m'
-        self.tile_ship_dead = '\x1b[5;30;47m' + '■' + '\x1b[0m'
-        self.tile_miss = '\x1b[5;37;44m' + '◌' + '\x1b[0m'
-        self.tile_border = '\x1b[5;34;44m' + '║' + '\x1b[0m'
+        self.tile_sea = f'\x1b[5;34;44m \x1b[0m'
+        self.tile_ship = f'\x1b[5;30;47m□\x1b[0m'
+        self.tile_ship_dead = f'\x1b[5;30;47m■\x1b[0m'
+        self.tile_miss = f'\x1b[5;37;44m◌\x1b[0m'
+        self.tile_border = f'\x1b[5;34;44m║\x1b[0m'
         self.turns = 0
         self.deck_enemy = 20
         self.deck_player = 20
